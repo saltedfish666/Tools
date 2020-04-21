@@ -14,12 +14,12 @@ import xlrd
 
 if __name__ == '__main__':
     # 获得名字和序号的对照字典
-    data = xlrd.open_workbook('选择表.xlsx')
+    data = xlrd.open_workbook('E:\Project\一些小工具\红娘组资料\互选表16改成35.xlsx')
     sheet1 = data.sheet_by_name('Sheet1')
     dic_name_id = {}
     dic_id_name = {}
     id_list = []
-    for i in list(range(1, sheet1.nrows)):
+    for i in list(range(sheet1.nrows)):
         dic_id_name[int(sheet1.row_values(i)[1])] = sheet1.row_values(i)[0]
         dic_name_id[sheet1.row_values(i)[0]] = int(sheet1.row_values(i)[1])
         id_list.append(int(sheet1.row_values(i)[1]))
@@ -33,26 +33,26 @@ if __name__ == '__main__':
                 id_list[j] = n
     #print(id_list)
     # 获得选择的二维数组
-    choose = [[0 for i in range(10)] for i in range(sheet1.nrows)]  # 行数和列数已+1，按实际的坐标
-    for i in list(range(0, sheet1.nrows)):
+    choose = [[0 for i in range(sheet1.ncols - 2)] for i in range(sheet1.nrows)]  # 行数和列数已+1，按实际的坐标
+    for i in list(range(sheet1.nrows)):
         j = 0
-        for temp in sheet1.row_values(i, 2, 12):
+        for temp in sheet1.row_values(i, 2, sheet1.ncols):
             if isinstance(temp, float):
                 choose[i][j] = int(temp)
             else:
                 choose[i][j] = temp
             j += 1
-    for i in list(range(1, sheet1.nrows)):
-        for j in list(range(10)):
+    '''for i in list(range(1, sheet1.nrows)):
+        for j in list(range(sheet1.ncols - 2)):
             if choose[i][j]:
-                choose[i][j] = int(choose[i][j])
+                choose[i][j] = int(choose[i][j])'''
     #print(choose)    #有包括第一行心动1心动2
 
     for id in id_list:    #遍历所有人
         name = dic_id_name[id]
         print('选了' + name + '（' + str(id) + '）的人：')
         for j in list(range(1, len(choose))):    #遍历全表，找选了TA的人
-            for k in list(range(10)):    #遍历每个人的选择
+            for k in list(range(sheet1.ncols - 2)):    #遍历每个人的选择
                 if id == choose[j][k]:
                     print(sheet1.row_values(j)[0] + '(' + str(sheet1.row_values(j)[1]) + ')', end=',')
                     break

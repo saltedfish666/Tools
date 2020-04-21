@@ -14,15 +14,16 @@ import xlrd
 
 if __name__ == '__main__':
     #获得名字和序号的对照字典
-    data = xlrd.open_workbook('选择表.xlsx')
+    data = xlrd.open_workbook('E:\Project\一些小工具\红娘组资料\互选表16改成35.xlsx')
     sheet1 = data.sheet_by_name('Sheet1')
     dic_name_id = {}
     dic_id_name = {}
     id_list = []
-    for i in list(range(1, sheet1.nrows)):
+    for i in list(range(sheet1.nrows)):
         dic_id_name[int(sheet1.row_values(i)[1])] = sheet1.row_values(i)[0]
         dic_name_id[sheet1.row_values(i)[0]] = int(sheet1.row_values(i)[1])
         id_list.append(int(sheet1.row_values(i)[1]))
+        #print(dic_name_id[sheet1.row_values(i)[0]])
     # 给id_list排序
     for i in range(len(id_list)):
         for j in range(len(id_list)):
@@ -32,25 +33,25 @@ if __name__ == '__main__':
                 id_list[i] = id_list[j]
                 id_list[j] = n
     #获得选择的二维数组
-    choose = [[0 for i in range(10)] for i in range(sheet1.nrows)]  # 行数和列数已+1，按实际的坐标
-    for i in list(range(0, sheet1.nrows)):
+    choose = [[0 for i in range(sheet1.ncols - 2)] for i in range(sheet1.nrows)]
+    for i in list(range(sheet1.nrows)):
         j = 0
-        for temp in sheet1.row_values(i, 2, 12):
+        for temp in sheet1.row_values(i, 2, sheet1.ncols):
             if isinstance(temp, float):
                 choose[i][j] = int(temp)
             else:
                 choose[i][j] = temp
             j += 1
-    for i in list(range(1, sheet1.nrows)):
-        for j in list(range(10)):
-            if choose[i][j]:
-                choose[i][j] = int(choose[i][j])
         #print(choose[i])
+    '''for i in list(range(sheet1.nrows)):
+        for j in list(range(5)):
+            if choose[i][j]:
+                choose[i][j] = int(choose[i][j])'''
 
-    for i in list(range(1, len(choose))):    #遍历所有人
+    for i in list(range(len(choose))):    #遍历所有人
         name = sheet1.row_values(i)[0]
         id = int(sheet1.row_values(i)[1])
-        for j in list(range(10)):    #遍历男生所选的ID
+        for j in list(range(sheet1.ncols - 2)):    #遍历男生所选的ID
             select_id = choose[i][j]
             flag = 0
             for k in list(range(i, len(choose))):    #确定男生所选的选择表的位置
@@ -58,6 +59,6 @@ if __name__ == '__main__':
                     flag = 1    #列表往下有成功互选的
                     break
             if flag:
-                for l in list(range(10)):    #遍历男生所选女生的选择
+                for l in list(range(sheet1.ncols - 2)):    #遍历男生所选女生的选择
                     if id == choose[k][l]:
-                        print('恭喜' + name + '（' + str(id) + '）' + '和' + dic_id_name[select_id] + '（' + str(select_id) + '）' + '配对成功')
+                        print('恭喜' + name + '（' + str(id) + '）和' + dic_id_name[select_id] + '（' + str(select_id) + '）配对成功')
